@@ -73,20 +73,34 @@ test('UI Controls', async ({ page }) => {
   await terms.uncheck();
   expect(await terms.isChecked()).toBeFalsy();
 
-  await expect(documen)
+ // await expect(document)
 
   // Step 7: Pause for debugging (optional)
-  await page.pause();
+ // await page.pause();
 });
 
 
-test.only('Child window handle', async ({ browser }) => {
+test('Child window handle', async ({ browser }) => {
   
    const context = await browser.newContext();
    const page = await context.newPage();
+   const userName = page.locator('#username');
    await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
    const documentLink = page.locator("[href*='documents-request']");
-   documentLink.click(); // new page is opened
-  
+   
+   const [newPage] = await Promise.all(
+[
+   context.waitForEvent('page'), //listen for any new page pending,rejected,fulfilled
+   documentLink.click(),
+]) // new page is opened
+
+const text = await newPage.locator(".red").textContent();
+const arrayText = text.split("@");
+const domain = arrayText[1].split(" ")[0]
+// console.log(domain);
+await page.locator("#username").fill(domain);
+console.log(await page.locator("#username").inputValue());
+
+
 
 })
